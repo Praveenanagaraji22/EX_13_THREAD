@@ -2,26 +2,39 @@
 # Date: 07.11.2024
 ## AIM:
 To develop a thread synchronization concept with the help of clicking the button in Android Studio.
+
 ## EQUIPMENTS REQUIRED:
 Latest Version Android Studio
+
 ## ALGORITHM:
 Step 1: Open Android Studio and then click on File -> New -> New project.
+
 Step 2: Then type the Application name as HelloWorld and click Next.
+
 Step 3: Then select the Minimum SDK as shown below and click Next.
+
 Step 4: Then select the Empty Activity and click Next. Finally click Finish.
+
 Step 5: Design layout in activity_main.xml.
+
 Step 6: Display message give in MainActivity file.
+
 Step 7: Save and run the application.
+
 ## PROGRAM:
+
 ```
-Program to print the text “optionmenu”.
 Developed by: PRAVEENA N
-Registeration Number : 212222040122
+Registeration Number : 21222222040122
 ```
-mainActivity.java
+
+
+## MainActivity.java
 ```
 package com.example.exp13;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,34 +45,61 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.concurrent.Semaphore;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+
+    // Object used for synchronizing access to counter
     private static final Object lock = new Object();
+
+    // Maximum number of concurrent threads
+    // that can access the counter
     private static final int MAX_THREADS = 5;
+
+    // Semaphore to limit concurrent access to the counter
     private static final Semaphore semaphore = new Semaphore(MAX_THREADS);
+
+    // Counter to store the
+    // number of button clicks
     private int counter = 0;
+
+    // Reference to the text view to
+    // display the number of button clicks
     private TextView textView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textView = findViewById(R.id.text_view);}
+        textView = findViewById(R.id.text_view);
+    }
     public void incrementCounter(View view) {
+        // Start a new thread to increment the counter
         new Thread(() -> {
             try {
+                // Acquire the semaphore
                 semaphore.acquire();
+                // Synchronized block to update the counter
                 synchronized (lock) {
-                    counter++;}
+                    counter++;
+                }
             } catch (InterruptedException e) {
                 // Log an error if the thread is interrupted
                 Log.e(TAG, "Thread interrupted", e);
             } finally {
-                semaphore.release(); }
+                // Release the semaphore
+                semaphore.release();
+            }
+            // Update the text view on the main thread
             updateTextView();
-        }).start(); }
+        }).start();
+    }
+
+    // Method to update the text view on the main thread
     private void updateTextView() {
+        // Post the update to the main thread's message queue
         new Handler(getMainLooper()).post(() -> textView.setText(String.valueOf(counter)));
-    }}
+    }
+
+}
 ```
-activity_main.xml
+## activity_main.xml:
 ```
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
@@ -69,6 +109,7 @@ activity_main.xml
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+
     <!-- A text view to display the count -->
     <TextView
         android:id="@+id/text_view"
@@ -80,7 +121,9 @@ activity_main.xml
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    <!-- A button to increment the count -->
+
+    <!-- A button to increment the count)
+ -->
     <Button
         android:id="@+id/increment_button"
         android:layout_width="wrap_content"
@@ -91,9 +134,11 @@ activity_main.xml
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 ```
 ## OUTPUT
-![384413860-8959ab62-39b5-4d81-b029-200b2f5ab089](https://github.com/user-attachments/assets/fe936ff8-f981-484b-83b7-6a6a1275df91)
+<img src="https://github.com/user-attachments/assets/93d8fd70-a91c-4d10-8530-7b917332ffde" width="200">
+
 ## RESULT
 The application is successfully displayed for thread synchronization concept with the help of clicking the button in Android Studio.
